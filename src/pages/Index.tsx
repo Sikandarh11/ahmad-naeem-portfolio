@@ -22,7 +22,7 @@ const Index = () => {
 
   return (
     <PortfolioProvider>
-      {!loaded && <PageLoader brandInitials="SH" onComplete={() => setLoaded(true)} />}
+      {!loaded && <PageLoader brandInitials="AN" onComplete={() => setLoaded(true)} />}
       <div className={`min-h-screen bg-background ${loaded ? "" : "invisible"}`}>
         <Navbar />
         <main>
