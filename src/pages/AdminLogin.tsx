@@ -43,7 +43,7 @@ const AdminLogin = () => {
       navigate("/admin");
     } else {
       setAdminSecret("");
-      setError("Account created! Check your email to confirm, then log in.");
+      setError("Signup submitted. Check your inbox/spam for a confirmation email, then log in.");
     }
   };
 

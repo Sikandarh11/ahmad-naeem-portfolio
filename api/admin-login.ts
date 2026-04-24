@@ -29,6 +29,29 @@ type LoginPayload = {
 
 const INVALID_CREDENTIALS = "Invalid credentials";
 
+const mapSupabaseAuthErrorMessage = (authData: Record<string, unknown>) => {
+  const rawMessage =
+    typeof authData.error_description === "string"
+      ? authData.error_description
+      : typeof authData.message === "string"
+        ? authData.message
+        : typeof authData.error === "string"
+          ? authData.error
+          : "";
+
+  const normalized = rawMessage.toLowerCase();
+  if (normalized.includes("email not confirmed") || normalized.includes("email not verified")) {
+    return "Email not confirmed. Check your inbox/spam and click the confirmation link.";
+  }
+
+  // Keep credential failures intentionally generic.
+  if (normalized.includes("invalid") || normalized.includes("credentials") || normalized.includes("grant")) {
+    return INVALID_CREDENTIALS;
+  }
+
+  return rawMessage || INVALID_CREDENTIALS;
+};
+
 const normalizePayload = (body: unknown): LoginPayload => {
   if (!body || typeof body !== "object") {
     return {};
@@ -92,9 +115,10 @@ export default async function handler(req: VercelReq, res: VercelRes) {
     const authData = await authResponse.json().catch(() => ({} as Record<string, unknown>));
 
     if (!authResponse.ok) {
+      const message = mapSupabaseAuthErrorMessage(authData as Record<string, unknown>);
       const failure = markFailedLogin(ip);
       res.status(401).json({
-        message: INVALID_CREDENTIALS,
+        message,
         captchaRequired: failure.captchaRequired,
         captchaQuestion: failure.captchaRequired ? "What is 3 + 4?" : undefined,
       });
