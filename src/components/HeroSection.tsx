@@ -175,7 +175,7 @@ const HeroSection = () => {
             ) : (
               <div className="w-64 h-64 rounded-full bg-card border-2 border-primary/30 flex items-center justify-center">
                 <span className="font-display text-4xl text-primary">
-                  {(profile?.name || "SH").split(" ").map((w) => w[0]).join("")}
+                  {(profile?.name || "AN").split(" ").map((w) => w[0]).join("")}
                 </span>
               </div>
             )}
